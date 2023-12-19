@@ -204,7 +204,8 @@ export default {
           const workbook = read(data, { type: "binary" });
           //建立临时变量存放数值
           const arrItem = [];
-          const tableDataItem = [];
+          const DataX = [];
+          const DataY = [];
           // 取对应表生成json表格内容
           workbook.SheetNames.forEach((item) => {
             this.tableData.push(utils.sheet_to_json(workbook.Sheets[item]));
@@ -218,6 +219,19 @@ export default {
                 temperature: item.temperature,
               });
             });
+          this.tableData[0] &&
+            this.tableData[0].map((item) => {
+              DataX.push(
+                moment(this.getFormatDate(item.time)).format("YYYY-MM-DD")
+              );
+            });
+          this.tableData[0] &&
+            this.tableData[0].map((item) => {
+              DataY.push(item.temperature);
+            });
+          this.zheOption.xAxis.data = DataX;
+          this.zheOption.series.data = DataY;
+          this.showZheData();
           // 该算法仅针对表头无合并的情况
           if (this.tableData.length > 0) {
             // 获取excel中第一个表格数据tableData[0][0]，并且将表头提取出来
